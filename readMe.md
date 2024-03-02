@@ -1,3 +1,3 @@
-<h1>校園拍賣APP</h1>
+<h1>校園商城 APP</h1>
 <hr>
-<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTu6ZtgX-reCSvRX_DNvVTUtdayjsDWmgaaEjYlrmRyL-sltLwDM5c7E1Uexzg0tvJInRpy4l31foXd/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+<h3>鑒於過去的經驗，我發現學長姐們在臉書、Line、IG等社交平台上發布二手書交易或轉讓時，情況非常混亂，有時無法確保最終能否成功取得物品，這導致交易上的困難。因此，我計劃創建一個專門的二手拍賣平台，供學長姐們將書籍或宿舍用品等物品能夠傳承給學弟妹們。這能讓學弟妹們能夠方便地獲得所需物品，節省生活上的開支，減輕家庭以及個人的負擔。平台將僅限校內學生註冊使用，並主要通過面交方式進行交易，這樣既可以降低詐騙和不良商品的風險，也讓學生有一個安心且實惠的交易管道。</h3>
