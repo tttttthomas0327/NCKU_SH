@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="歡迎各位將用不到的東西傳承給學弟妹們！！">
+    <meta name="keywords" content="校園二手拍,校園APP">
+    <link rel="apple-touch-icon" sizes="57x57" href="ico/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="ico/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="ico/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="ico/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="ico/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="ico/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="ico/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="ico/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="ico/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="ico/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="ico/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="ico/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="ico/favicon-16x16.png">
+    <link rel="manifest" href="ico/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="ico/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/version2.css">
+    <title>校園二手拍賣場</title>
+    <link rel="preconnect" href="https://ka-f.fontawesome.com">
+    <script src="js/vue.js" defer></script>
+    <script src="js/index.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="screen-orientation" content="portrait"> 
+    <meta name="×5-orientation" content="portrait">
+    <link rel="preload" href="img/bg2.jpg" as="image" />
+    <link rel="preload" href="img/form.jpeg" as="image" />
+    <link rel="preload" href="img/pin2.png" as="image" />
+    <link rel="preload" href="img/down.webp" as="image" />
+    <link rel="preload" href="img/NCHU.png" as="image" />
+    <link rel="preload" href="img/load_ani.gif" as="image" />
+    <link rel="preload" href="img/system.png" as="image" />
+    <link rel="preconnect" href="https://drive.google.com">
+</head>
+<style>
+    [v-cloak]{
+        display: none;
+    }
+</style>
+<body>
+    <div class="app" id="app" v-cloak>
+        <div class="alertMsgBlock" v-if="alertMsgBlock">
+            <p v-if="alertOption=='check'"><i class="fa-solid fa-circle-check check"></i> {{alertMsg}}</p>
+            <p v-if="alertOption=='warn'"><i class="fa-solid fa-circle-exclamation warn"></i> {{alertMsg}}</p>
+            <p v-if="alertOption=='error'"><i class="fa-solid fa-circle-xmark error"></i> {{alertMsg}}</p>
+        </div>
+        <div class="firstPage" v-if='!loginSuccess'>
+            <div class="banner"></div>
+            <div class="intro">
+                <p>1.本系統僅對會員登入之帳號與密碼進行收集。</p>
+                <p>2.未避免外校/閒雜人物亂入，僅供校內信箱進行註冊驗證。</p>
+                <p>3.本系統不支援金流串接，僅提供預約功能，以面交為主。</p>
+                <p>4.未避免個資外流，本系統的買賣交流方式以 Email 為主。</p>
+                <p>5.本系統為非營利應用程式，請友善對待此平台。</p>
+                <p>6.使用者識別碼為獨特性，將寄件至註冊帳號中。</p>
+            </div>
+            <div class="login" v-if="loginPageIndex==1">
+                <h1>會員登入</h1>
+                <div class="loginForm">
+                    <div class="user">
+                        <div class="icon"><i class="fa-solid fa-user"></i></div>
+                        <div class="loginInput">
+                            <input type="text" placeholder="請輸入學校電子信箱" v-model="loginData.user">
+                        </div>
+                    </div>
+                    <div class="password">
+                        <div class="icon"><i class="fa-solid fa-key"></i></div>
+                        <div class="loginInput">
+                            <input class="loginP" type="password" placeholder="請輸入密碼" v-model="loginData.password">
+                            <i @click="toggleEye(0)" class="fa-regular fa-eye-slash eye_open"></i>
+                        </div>
+                    </div>
+                    <div class="password">
+                        <div class="icon"><i class="fa-solid fa-fingerprint"></i></div>
+                        <div class="loginInput">
+                            <input class="loginP" type="password" placeholder="使用者識別碼" v-model="loginData.code">
+                            <i @click="toggleEye(1)" class="fa-regular fa-eye-slash eye_open"></i>
+                        </div>
+                    </div>
+                    <div class="loginBtn" @click="login()">
+                        <i v-if="loginStart" class="fa-solid fa-ellipsis fa-fade login_load"></i>
+                        <span v-else>登入</span>
+                    </div>
+                    <div class="goReg" @click="changeLoginIndex(2)">還沒有帳號嗎？</div>
+                    <div class="goReg" @click="changeLoginIndex(3)">忘記密碼？</div>
+                </div>
+                <div class="versionInfo">{{version}} <br><i class="fa-solid fa-cannabis"></i> Designed By Thomas</div>
+            </div>
+            <div class="login" v-if="loginPageIndex==2">
+                <h1>會員註冊</h1>
+                <div class="loginForm">
+                    <div class="user">
+                        <div class="icon"><i class="fa-solid fa-user"></i></div>
+                        <div class="loginInput">
+                            <input type="text" placeholder="請輸入學校電子信箱" v-model="registerData.user">
+                        </div>
+                    </div>
+                    <div class="password">
+                        <div class="icon"><i class="fa-solid fa-key"></i></div>
+                        <div class="loginInput">
+                            <input class="loginP" type="password" placeholder="請輸入密碼" v-model="registerData.password">
+                            <i @click="toggleEye(0)" class="fa-regular fa-eye-slash eye_open"></i>
+                        </div>
+                    </div>
+                    <div class="loginBtn" @click="register()">
+                        <i v-if="registerStart" class="fa-solid fa-ellipsis fa-fade login_load"></i>
+                        <span v-else>註冊</span>
+                    </div>
+                    <div class="goReg" @click="changeLoginIndex(1)">已擁有會員帳號？</div>
+                    <div class="goReg" @click="changeLoginIndex(3)">忘記密碼？</div>
+                </div>
+                <div class="versionInfo">{{version}} <br><i class="fa-solid fa-cannabis"></i> Designed By SCCJ</div>
+            </div>
+            <div class="login" v-if="loginPageIndex==3">
+                <h1>找回密碼</h1>
+                <div class="loginForm">
+                    <div class="user">
+                        <div class="icon"><i class="fa-solid fa-user"></i></div>
+                        <div class="loginInput">
+                            <input type="text" placeholder="請輸入學校電子信箱" v-model="forgetData">
+                        </div>
+                    </div>
+                    <div class="loginBtn" @click="forgetUser()">
+                        <i v-if="forgetStart" class="fa-solid fa-ellipsis fa-fade login_load"></i>
+                        <span v-else>寄送資料至信箱</span>
+                    </div>
+                    <div class="goReg" @click="changeLoginIndex(1)">已擁有會員帳號？</div>
+                    <div class="goReg" @click="changeLoginIndex(2)">還沒有帳號嗎？</div>
+                </div>
+                <div class="versionInfo">{{version}} <br><i class="fa-solid fa-cannabis"></i> Designed By SCCJ</div>
+            </div>
+        </div>
+        <div class="mainPage" v-if="loginSuccess">
+            <div class="item-intro it" v-if="openIndex==1">
+                <i @click="closeItem()" class="fa-solid fa-xmark mark"></i>
+                <div class="contentText">商品介紹</div>
+                <div class="img_car_all">
+                    <div class="img_car" :id="product_intro.id">
+                        <img v-for="obj in product_intro.img" :src="obj" alt="">
+                    </div>
+                    <div class="arrow">
+                        <img src="img/down.webp" alt="" class="right" @click="contentImg(product_intro.id,product_intro.img,1)">
+                        <img src="img/down.webp" alt="" class="left" @click="contentImg(product_intro.id,product_intro.img,2)">
+                    </div>
+                </div>
+                <h1 v-text="product_intro.title"></h1>
+                <p>${{product_intro.price}} <span class="intro_id">商品編號：{{product_intro.id}} <i @click="copy(product_intro.id)" class="fa-regular fa-copy copy_icon" title="複製"></i></span></p>
+                <div class="ct-intro">
+                    <p class="ct-intro-title">詳細資訊</p>
+                    <p class="ct-intro-main" v-text="product_intro.intro"></p>
+                </div>
+                <div class="item-intro-footer">
+                    <div class="intro-total">合計：${{product_intro.price}}</div>
+                    <div v-if="product_intro.flag=='seller'" class="item-intro-btn item-intro-btn-seller" @click="openWindow(3,product_intro)"><i class="fa-solid fa-pen"></i> 修改</div>
+                    <div v-if="product_intro.flag=='seller'" class="item-intro-btn item-intro-btn-seller2" @click="removeEnabled?removeItem(product_intro.key,product_intro.title,product_intro.price):alert('下架進行中，請稍待片刻','warn')"><i class="fa-solid fa-trash"></i> 下架</div>
+                    <div v-else-if="product_intro.mail==loginData.user" class="item-intro-btn" @click="removeEnabled?removeItem(product_intro.key,product_intro.title,product_intro.price):alert('下架進行中，請稍待片刻','warn')"><i class="fa-solid fa-trash"></i> 下架商品</div>
+                    <div v-else-if="buyerReserve.find(el=> el.buyer == this.loginData.user && el.key == product_intro.key)" class="item-intro-btn" @click="deleteReserve(product_intro.key)"><i class="fa-solid fa-seedling"></i> 取消預約</div>
+                    <div v-else class="item-intro-btn" @click="reserve(product_intro.title,product_intro.img1,product_intro.price,product_intro.intro,product_intro.mail,product_intro.key)"><i class="fa-solid fa-cart-shopping"></i> 預約商品</div>           
+                </div>
+            </div>
+            <div class="item-intro2" v-if="openIndex==2">
+                <div class="shop">
+                    <i @click="closeItem()" class="fa-solid fa-xmark mark2"></i>
+                    <div class="shop-title"><div class="stt">商品標題：</div><br><input type="text" v-model="uploadItem.title"></div>
+                    <div class="shop-title"><div class="stt">商品價格：</div><br><input type="text" v-model="uploadItem.price"></div>
+                    <div class="shop-title"><div class="stt">商品介紹：</div><br>
+                        <textarea v-model="uploadItem.intro"></textarea>
+                    </div>
+                    <div class="shop-title"><div class="stt">商品縮圖(1:1、最大3MB):</div> <input type='file' accept="image/jpg,image/png,image/jpeg" class="file" id="upload1" v-on:change="uploadFile()"><br></div>
+                    <div class="shop-title"><div class="stt">商品縮圖(1:2、可三張、最大各3MB):</div><input type='file' accept="image/jpg,image/png,image/jpeg" class="file" id="upload2" v-on:change="uploadFiles()" multiple><br></div>
+                    <div class="shop-title">商品標籤:
+                        <select name="" id="" v-model="uploadItem.tag">
+                            <option value="書籍">書籍</option>
+                            <option value="衣物">衣物</option>
+                            <option value="宿舍用品">宿舍用品</option>
+                            <option value="電子用品">電子用品</option>
+                            <option value="零食">零食</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="shopbtn" @click="uploadEnabled?addItem():alert('上架進行中，請稍待片刻','warn')"><i class="fa-solid fa-rocket"></i> 上架商品</div>
+                </div>
+            </div>
+            <div class="item-intro2" v-if="openIndex==3">
+                <div class="shop">
+                    <div class="reviseTitle">修改表單</div>
+                    <i @click="closeItem()" class="fa-solid fa-xmark mark2"></i>
+                    <div class="shop-title"><div class="stt">商品標題：</div><br><input type="text" v-model="reviseProduct.title"></div>
+                    <div class="shop-title"><div class="stt">商品價格：</div><br><input type="text" v-model="reviseProduct.price"></div>
+                    <div class="shop-title shopTitle2"><div class="stt">商品介紹：</div><br>
+                        <textarea v-model="reviseProduct.intro" class="reviseIntro"></textarea>
+                    </div>
+                    <div class="shop-title">商品標籤:
+                        <select name="" id="" v-model="reviseProduct.tag" class="reviseTag">
+                            <option value="書籍">書籍</option>
+                            <option value="衣物">衣物</option>
+                            <option value="宿舍用品">宿舍用品</option>
+                            <option value="電子用品">電子用品</option>
+                            <option value="零食">零食</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="shopbtn" @click="reviseProductEnabled?reviseProductStart():alert('修改進行中，請稍待片刻','warn')"><i class="fa-solid fa-pen"></i> 保存修改</div>
+                </div>
+            </div>
+            <div class="header">
+                <div class="mpTitle">
+                    <div class="mpLogo">校園商城</div>
+                    <div class="search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" v-model="keyword" :placeholder="placeholder" id="search_input" @focus="openIndex=0">
+                    </div>
+                    <div class="filter" @click="showFilter()"><i class="fa-solid fa-filter"></i></div>
+                    <div class="filterBar" id="filterBar">
+                        <div id="fil">
+                            <div><input type="radio" name="filter" value="all" v-model="filterName">全部</div>
+                            <div><input type="radio" name="filter" value="宿舍用品" v-model="filterName">宿舍用品</div>
+                            <div><input type="radio" name="filter" value="電子用品" v-model="filterName">電子用品</div>
+                            <div><input type="radio" name="filter" value="書籍" v-model="filterName">書籍</div>
+                            <div><input type="radio" name="filter" value="衣物" v-model="filterName">衣物</div>
+                            <div><input type="radio" name="filter" value="零食" v-model="filterName">零食</div>
+                            <div><input type="radio" name="filter" value="其他" v-model="filterName">其他</div>
+                            <div @click="sort()" class="sort">
+                                <i class="fa-solid fa-arrow-up-wide-short" v-if="sortFlag==2"></i><!-- 由低至高 -->
+                                <i class="fa-solid fa-arrow-down-wide-short" v-else></i><!-- 由高至低 -->
+                                價格排序
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content" v-if="mainPageIndex==0">
+                <i id='fr' class="fa-solid fa-arrows-rotate" @click="spinRefresh()"></i>
+                <div class="content-control">
+                    <div class="content-box" 
+                    v-if="(obj.title.includes(keyword) || (obj.id).toString().includes(keyword) || obj.tag.includes(keyword)) 
+                        && (filterName=='all' || filterName==obj.tag)" 
+                    v-for="obj in product" 
+                    @click="openItem(obj.id,obj.title,obj.price,obj.img2,obj.intro,obj.mail,obj.key,obj.img1,'',obj.tag)">
+                        <img :src="obj.img1" alt="">
+                        <div class="pin"></div>
+                        <h1 v-text="obj.title"></h1>
+                        <p>${{obj.price}}</p>
+                        <div class="re">預約數：{{obj.per}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content" v-if="mainPageIndex==1">
+                <div class="forum-spin" id="forum-spin"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="content-control content-control2 cc" id="msgScroll">
+                    <div class="content-box content-box2" 
+                    v-for="obj,index in forumItem" 
+                    v-if="obj.user.includes(keyword) || obj.content.includes(keyword) || keyword==''">
+                        <div class="art-date">{{obj.date}}
+                            <i v-if="loginData.user==obj.user" @click="toggleMenu(index)" class="fa-solid fa-ellipsis-vertical menu"></i>
+                            <div v-if="loginData.user==obj.user" class="menuBox" :id="'menu'+index">
+                                <div class="menu-c" @click="deleteForum(obj.key,index)">刪除留言</div>
+                            </div>
+                        </div>
+                        <div class="artist">
+                            <img src="ico/apple-icon-57x57.png" alt="">
+                            <p v-text="obj.user"></p>
+                        </div>
+                        <div class="artist-c" v-text="obj.content"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="write" id="write" v-if="mainPageIndex==1">
+                <input type="text" class="write-input" id="wrInput" v-model="forumContent" :placeholder="writeHolder">
+                <i  class="fa-solid fa-paper-plane writeSend" @click="forumEnabled?uploadForum():alert('發布進行中，請稍待片刻','warn')"></i>
+            </div>
+            <div class="content content3" v-if="mainPageIndex==2">
+                <div class="Personlist">
+                    <div class="pl-head">
+                        <div class="pl-head-img" @click="uploadUserImg()">
+                            <img :src="userInfo.img" alt="">
+                            <div class="uploadUserImg">上傳頭像
+                                 <input type='file' accept="image/jpg,image/png,image/jpeg" class="file" id="headImg" v-on:change="uploadUserImgStart()">
+                            </div>
+                        </div>
+                        <div class="pl-head-name" v-text="userInfo.user"></div>
+                    </div>
+                    <div class="pl-c" @click="main(3,'修改完畢後請按確認鍵！')">基本資料</div>
+                    <div class="pl-c" @click="main(4,'關鍵字搜尋商品')">個人賣場</div>
+                    <div class="pl-c" @click="main(5,'搜尋待出貨訂單')">賣家訂單</div>
+                    <div class="pl-c" @click="main(6,'搜尋商品預約訂單')">預約管理</div>
+                    <div class="pl-c" @click="clearLogin()">登出</div>
+                </div>
+            </div>
+            <div class="content content3" v-if="mainPageIndex==3">
+                <div class="pl-head">
+                    <div class="pl-head-img" @click="uploadUserImg()">
+                        <img :src="userInfo.img" alt="">
+                        <div class="uploadUserImg">上傳頭像
+                            <input type='file' accept="image/jpg,image/png,image/jpeg" class="file" id="headImg" v-on:change="uploadUserImgStart()">
+                       </div>
+                    </div>
+                    <div class="pl-head-name" v-text="userInfo.user"></div>
+                </div>
+                <div class="userInfoPage">
+                   <div class="userInfoPage-c">
+                        <div>使用者帳號：</div>
+                        <input type="text" disabled :value="userInfo.user"><br>
+                   </div> 
+                   <div class="userInfoPage-c">
+                        <div>使用者密碼：</div>
+                        <input type="text" v-model="userInfo.password" :disabled="reviseNotEnabled"><br>
+                   </div>
+                   <div class="userInfoPage-c">
+                        <div>使用者驗證碼：</div>
+                        <input type="text" v-model="userInfo.key" :disabled="reviseNotEnabled"><br>
+                   </div>
+                    <div class="userInfoRevise" @click="reviseUserInfo()">
+                        <i v-if="reviseNotEnabled" class="fa-solid fa-ellipsis fa-fade"></i>
+                        <span v-else><i class="fa-solid fa-pen"></i> 保存修改</span>
+                    </div>
+                </div>
+            </div>
+            <div class="content content3" v-if="mainPageIndex==4">
+                <div class="pl-head">
+                    <div class="pl-head-img" @click="uploadUserImg()">
+                        <img :src="userInfo.img" alt="">
+                        <div class="uploadUserImg">上傳頭像
+                            <input type='file' accept="image/jpg,image/png,image/jpeg" class="file" id="headImg" v-on:change="uploadUserImgStart()">
+                       </div>
+                    </div>
+                    <div class="pl-head-name" v-text="userInfo.user"></div>
+                </div>
+                <i id='fr' class="fa-solid fa-arrows-rotate" @click="spinRefresh()"></i>
+                <div class="content-control ct-in-index4">
+                    <div class="content-box" 
+                    v-if="(obj.title.includes(keyword) || (obj.id).toString().includes(keyword) || obj.tag.includes(keyword)) && (filterName=='all' || filterName==obj.tag) && obj.mail==loginData.user" 
+                    v-for="obj in product" 
+                    @click="openItem(obj.id,obj.title,obj.price,obj.img2,obj.intro,obj.mail,obj.key,obj.img1,'seller',obj.tag)">
+                        <img :src="obj.img1" alt="">
+                        <div class="pin"></div>
+                        <h1 v-text="obj.title"></h1>
+                        <p>${{obj.price}}</p>
+                        <div class="re">預約數：{{obj.per}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content content3" v-if="mainPageIndex==5">
+                <div class="pl-head">
+                    <div class="pl-head-img" @click="uploadUserImg()">
+                        <img :src="userInfo.img" alt="">
+                        <div class="uploadUserImg">上傳頭像
+                            <input type='file' accept="image/jpg,image/png,image/jpeg" class="file" id="headImg" v-on:change="uploadUserImgStart()">
+                       </div>
+                    </div>
+                    <div class="pl-head-name" v-text="userInfo.user"></div>
+                </div>
+                <div class="sellerReserveList">
+                  <div class="srlist" v-if="obj.content.includes(keyword) || obj.buyer.includes(keyword) || keyword==''" v-for="obj,index in sellerReserve" :id="'srlist'+index">
+                    <div class="sr-title" @click="toggleSrList(index)">出貨單 {{index+1}}：{{obj.content}}<i class="fa-solid fa-chevron-up oc"></i></div>
+                    <div class="sr-detail-control">
+                        <div class="sr-detail">
+                            <div class="sr-dc sr-ex">買家信箱：{{obj.buyer}} <i @click="copy(obj.buyer)" class="fa-regular fa-copy copy_icon" title="複製"></i></div>
+                            <div class="sr-dc">訂單成立：<br>{{new Date(obj.date).toLocaleDateString()}}</div>
+                            <div class="sr-dc">商品名稱：<br>{{obj.content}}</div>
+                            <div class="sr-dc">訂單價格：<br>$ {{obj.price}}</div>
+                            <div class="sr-dc">商品識別：<br>{{obj.key}}</div>
+                            <div class="sr-dc sr-ex">賣家信箱：{{obj.seller}} <i @click="copy(obj.seller)" class="fa-regular fa-copy copy_icon" title="複製"></i></div>
+                            <div class="sr-btn" @click="removeEnabled?finishOrder(obj.key):alert('紀錄中，請稍待片刻','warn')"><i class="fa-solid fa-flag"></i> 完成訂單</div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="content content3" v-if="mainPageIndex==6">
+                <div class="pl-head">
+                    <div class="pl-head-img" @click="uploadUserImg()">
+                        <img :src="userInfo.img" alt="">
+                        <div class="uploadUserImg">上傳頭像
+                            <input type='file' accept="image/jpg,image/png,image/jpeg" class="file" id="headImg" v-on:change="uploadUserImgStart()">
+                       </div>
+                    </div>
+                    <div class="pl-head-name" v-text="userInfo.user"></div>
+                </div>
+                <div class="sellerReserveList">
+                    <div class="srlist" v-if="obj.content.includes(keyword) || obj.seller.includes(keyword) || keyword==''" v-for="obj,index in buyerReserve" :id="'srlist'+index">
+                    <div class="sr-title" @click="toggleSrList(index)">預約單 {{index+1}}：{{obj.content}}<i class="fa-solid fa-chevron-up oc"></i></div>
+                    <div class="sr-detail-control">
+                        <div class="sr-detail">
+                            <div class="sr-dc sr-ex">買家信箱：{{obj.buyer}} <i @click="copy(obj.buyer)" class="fa-regular fa-copy copy_icon" title="複製"></i></div>
+                            <div class="sr-dc">訂單成立：<br>{{new Date(obj.date).toLocaleDateString()}}</div>
+                            <div class="sr-dc">商品名稱：<br>{{obj.content}}</div>
+                            <div class="sr-dc">訂單價格：<br>$ {{obj.price}}</div>
+                            <div class="sr-dc">商品識別：<br>{{obj.key}}</div>
+                            <div class="sr-dc sr-ex">賣家信箱：{{obj.seller}} <i @click="copy(obj.seller)" class="fa-regular fa-copy copy_icon" title="複製"></i></div>
+                            <div class="sr-btn" @click="drEnabled?deleteReserve(obj.key):alert('取消預約中，請稍待片刻','warn')"><i class="fa-solid fa-seedling"></i> 取消預約</div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="content" v-if="mainPageIndex==7">
+                <div class="forum-spin" id="forum-spin"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                <div class="content-control content-control2" @scroll="systemRefresh()" id="msgScroll">
+                    <div class="content-box content-box2" 
+                    v-for="obj,index in systemInfo" 
+                    v-if="obj.content.includes(keyword) || keyword==''">
+                        <div class="art-date" v-text="new Date(obj.date).toLocaleDateString()"></div>
+                        <div class="artist">
+                            <img src="img/system.png" alt="">
+                            <p>系統通知</p>
+                            <div class="newFire" v-if="sysInfoReadTime-obj.date<=43200000"><i class="fa-solid fa-fire"></i> Latest</div>
+                        </div>
+                        <div class="artist-c" v-text="obj.content"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="footer-content"  @click="main(0,'輸入關鍵字查詢商品')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>主頁</span>
+                </div>
+                <div class="footer-content" @click="main(1,'關鍵字查詢作者或留言')">
+                    <i class="fa-solid fa-message"></i>
+                    <span>論壇</span>
+                </div>
+                <div class="footer-content" @click="openWindow(2)">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>上架</span>
+                </div>
+                <div class="footer-content" @click="main(7,'系統通知信查詢')">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>通知</span>
+                </div>
+                <div class="footer-content" @click="main(2,'親愛的使用者您好！')">
+                    <i class="fa-solid fa-user"></i>
+                    <span>個人</span>
+                </div>
+            </div>
+        </div>
+            <canvas id="canvas" class="canvas"></canvas>
+        </div>
+</body>
+<script src="https://kit.fontawesome.com/026fbb8b51.js" crossorigin="anonymous"></script>
+<script src="js/three.js"></script>
+<script src="js/globe.js"></script>
+<script>
+    VANTA.GLOBE({
+    el: "#app",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 1000.00,
+    minWidth: 375.00,
+    scale: 1.00,
+    scaleMobile: 1.00
+    })
+</script>
+</html>
